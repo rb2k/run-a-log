@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Run-a-log</title>
+  </head>
+  <body>
+
+    <img src="logo/Logo_001.png" alt="Logo"/>
+    <table border="1" id="stats">
+      <thead>
+
+        <tr>
+          <th>Filename</th>
+          <th>Start</th>
+          <th>Distance (m)</th>
+          <th>Duration (min)</th>
+          <th>Avg Speed (km/h)</th>
+
+          <th>Details</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+
+
+        <% @my_tracks.each do |item| %>
+          <tr>
+            <td><b><%= item.filename %></b></td>
+            <td class="stat"><%= item.start.strftime("%Y.%m.%d - %H:%M") %></td>
+            <td><%= item.distance.to_i.to_s %></td>
+            <td><%= (item.duration / 60).to_i.to_s %></td>
+            <td><%= "%0.2f" % item.speed_avg.to_s %></td>
+            <td align="center"><a href="/details/<%= item.filename %>"><img src="icons/details.gif" alt="details" width=18px height=20px border=0 /></a></td>
+            <td align="center"><a href="/delete/<%= item.filename %>"><img src="icons/delete.gif" alt="delete" width=18px height=18px border=0  /></a></td>
+
+          </tr>
+        <% end %>
+
+      </tbody>
+
+    </table>
+    <br/>
+    Amount of files: <%= @my_tracks.size.to_s %><br/>
+    Total distance: <%= @total_distance %> km<br/>
+    Total duration: <%= @total_duration %>h<br/>
+    Average distance: <%= @average_distance %> m<br/>
+    Average duration: <%= @average_duration %> min<br/>
+    <a href="/upload">Upload new file</a>
+
+
+
+
+    <script type="text/javascript" src="webtoolkit.sortabletable.js"></script>
+    <script type="text/javascript">
+      var t = new SortableTable(document.getElementById('stats'), 100);
+    </script>
+
+
+
+
+
+  </body>
+</html>

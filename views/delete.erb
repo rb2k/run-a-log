@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Run-a-log</title>
+  </head>
+  <body>
+    Please insert your admin pass to delete <%= @filename.to_s %>:
+    <br/>
+    <form action="delete" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+      admin pass: <input type="password" name="admin_pass" id="admin_pass">
+      <input type="hidden" name="filename" value="<%= @filename.to_s %>">
+      <p><input type="submit" value="Yes!"></p>
+    </form>
+    <a href="/">back</a>
+
+
+  </body>
+
+</html>

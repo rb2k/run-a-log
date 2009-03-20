@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Run-a-log</title>
+  </head>
+  <body>
+  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= Sinatra::Application.google_maps_key %>&amp;sensor=true"
+          type="text/javascript"></script>
+
+  <body onload="initialize()" onunload="GUnload()">
+    <a href="/"><-- back</a><br/>
+
+    Filename: <%= @my_item.filename %><br/>
+    Start: <%= @my_item.start.strftime("%d.%m.%Y - %H:%M") %><br/>
+    End: <%= @my_item.end.strftime("%d.%m.%Y - %H:%M") %><br/>
+    Distance: <%= @my_item.distance.to_s %> m<br/>
+    Duration: <%= Integer((@my_item.duration / 60)).to_s %> min<br/>
+    Avg Speed: <%= @my_item.speed_avg.to_s %> km/h<br/>
+
+
+    <div id="map_canvas" style="width: 800px; height: 600px"></div>
+
+    <script type="text/javascript">
+
+      function initialize() {
+        if (GBrowserIsCompatible()) {
+          var map = new GMap2(document.getElementById("map_canvas"));
+
+          // Set up the Boundries of what we want to view
+          var bounds = new GLatLngBounds;
+
+
+<%# I don't really know if that's ok... but so far, it works... %>
+      // SW Corner
+      bounds.extend(new GLatLng( <%= @latlon.min.join(", ") %>));
+      // NE Corner
+      bounds.extend(new GLatLng( <%= @latlon.max.join(", ") %>));
+      map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
+
+      // Add our controls and map views
+      map.addControl(new GLargeMapControl());
+      map.addControl(new GScaleControl());
+      map.addControl(new GMapTypeControl());
+      map.addMapType(G_PHYSICAL_MAP);
+      //map.setMapType(G_PHYSICAL_MAP);
+      map.setMapType(G_NORMAL_MAP);
+
+      var myLine = new GPolyline.fromEncoded({
+        color: "#0000ff",
+        weight: 4,
+        opacity: 0.8,
+        zoomFactor: <%=@polyline[:zoomFactor] %>,
+        numLevels: <%=@polyline[:numLevels] %>,
+        points: "<%=@polyline[:points] %>",
+        levels: "<%=@polyline[:levels] %>"
+      });
+
+
+
+      map.addOverlay(myLine);
+
+<%# doesn't work so far
+// Add Starting and Ending Markers
+var pt_start = myLine.getVertex(0);
+map.addOverlay(new createMarker(pt_start,"green","S"));
+var pt_end = myLine.getVertex(myLine.getVertexCount()-5);
+map.addOverlay(new createMarker(pt_end,"red","E"));
+
+%>
+    }
+  }
+
+    </script>
+
+    <img src="<%=@my_speed_url%>" alt="speed graph"/><br/>
+    <img src="<%=@my_altitude_url%>" alt="altitude graph"/>
+
+    <br/>
+    <br/>
+    <a href="/"><-- back</a>
+
+
+
+
+  </body>
+</html>
