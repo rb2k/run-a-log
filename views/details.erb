@@ -3,22 +3,32 @@
   <head>
     <title>Run-a-log</title>
   </head>
+  <style type="text/css">
+     div.left{float:left;width:620px;padding:10px;border: 1px grey solid;}
+     div.right{float:right; padding:10px;border:1px silver solid;}
+     img{padding: 5px;}
+    </style>
   <body>
   <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= Sinatra::Application.google_maps_key %>&amp;sensor=true"
           type="text/javascript"></script>
 
   <body onload="initialize()" onunload="GUnload()">
-    <a href="/"><-- back</a><br/>
+
+<div class="left">
+
+    <a href="/run-a-log">&lt;-- back</a><br/>
 
     Filename: <%= @my_item.filename %><br/>
+<br />
     Start: <%= @my_item.start.strftime("%d.%m.%Y - %H:%M") %><br/>
     End: <%= @my_item.end.strftime("%d.%m.%Y - %H:%M") %><br/>
-    Distance: <%= @my_item.distance.to_s %> m<br/>
     Duration: <%= Integer((@my_item.duration / 60)).to_s %> min<br/>
+<br />
+    Distance: <%= @my_item.distance.to_s %> m<br/>
     Avg Speed: <%= @my_item.speed_avg.to_s %> km/h<br/>
+ 
 
-
-    <div id="map_canvas" style="width: 800px; height: 600px"></div>
+    <div id="map_canvas" style="width: 600px; height: 600px"></div>
 
     <script type="text/javascript">
 
@@ -71,16 +81,10 @@ map.addOverlay(new createMarker(pt_end,"red","E"));
   }
 
     </script>
-
+</div>
+<div class="right">
     <img src="<%=@my_speed_url%>" alt="speed graph"/><br/>
     <img src="<%=@my_altitude_url%>" alt="altitude graph"/>
-
-    <br/>
-    <br/>
-    <a href="/"><-- back</a>
-
-
-
-
+</div>
   </body>
 </html>

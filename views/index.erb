@@ -3,35 +3,73 @@
   <head>
     <title>Run-a-log</title>
   </head>
+  <style type="text/css">
+		table{
+			border: none;
+			border-spacing: 0px;		
+			border-color: gray;	
+		}
+		th{
+			border-width: 1px;
+			padding: 3px;
+			border-style: dotted;
+			border-color: silver;
+			background-color: white;
+			-moz-border-radius: 6px;
+		}
+		tr.odd{
+			background-color: #ffffee;
+		}
+		tr.even{
+			background.color: #ff0;
+		}
+		td{
+			border-width: 1px;
+		        padding: 3px;
+			border-style: dotted;
+			border-color: gray;
+		        -moz-border-radius: 6px 6px 6px 6px;
+		}
+		td.number{text-align: right;}
+		div#content{width: 1000px; margin: 20px auto;}
+		table#list{float: left; padding-right: 5px;}
+		div#stats{border: 1px silver solid;}
+	 </style>
+
   <body>
 
-    <img src="logo/Logo_001.png" alt="Logo"/>
-    <table border="1" id="stats">
+    <img src="logo/RunALogLogo.png" alt="Logo" style="float: left;"/>
+    <table id="list">
       <thead>
 
         <tr>
-          <th>Filename</th>
-          <th>Start</th>
-          <th>Distance (m)</th>
-          <th>Duration (min)</th>
-          <th>Avg Speed (km/h)</th>
-
-          <th>Details</th>
-          <th>Delete</th>
+          <th>Filename <a href="upload">(upload new)</a></th>
+          <th>start</th>
+          <th>distance</th>
+          <th>duration</th>
+          <th>avg Speed</th>
+          <th>ele. diff</th>
+          <th>max &hearts;</th>
+          <th>avg &hearts;</th>
+          <th>action</th>
+          
         </tr>
       </thead>
       <tbody>
-
-
-        <% @my_tracks.each do |item| %>
-          <tr>
+        <%  i=0
+	@my_tracks.each do |item| 
+		i = i+1 %>
+          <tr class="<%= (i % 2 == 0 ? "even" : "odd") %>">
             <td><b><%= item.filename %></b></td>
             <td class="stat"><%= item.start.strftime("%Y.%m.%d - %H:%M") %></td>
-            <td><%= item.distance.to_i.to_s %></td>
-            <td><%= (item.duration / 60).to_i.to_s %></td>
-            <td><%= "%0.2f" % item.speed_avg.to_s %></td>
-            <td align="center"><a href="/details/<%= item.filename %>"><img src="icons/details.gif" alt="details" width=18px height=20px border=0 /></a></td>
-            <td align="center"><a href="/delete/<%= item.filename %>"><img src="icons/delete.gif" alt="delete" width=18px height=18px border=0  /></a></td>
+            <td class='number'><%= item.distance.to_i.to_s %> m</td>
+            <td class='number'><%= (item.duration / 60).to_i.to_s %> min</td>
+            <td class='number'><%= "%0.2f" % item.speed_avg.to_s %> km/h</td>
+	    <td class='number'></td>
+	    <td class='number'></td>
+            <td class='number'></td>
+            <td align="center"><a href="details/<%= item.filename %>"><img src="icons/details.gif" alt="details" width=18px height=20px border=0 /></a>
+            <a href="delete/<%= item.filename %>"><img src="icons/delete.gif" alt="delete" width=18px height=18px border=0  /></a></td>
 
           </tr>
         <% end %>
@@ -40,13 +78,13 @@
 
     </table>
     <br/>
+<div id="stats">
     Amount of files: <%= @my_tracks.size.to_s %><br/>
     Total distance: <%= @total_distance %> km<br/>
     Total duration: <%= @total_duration %>h<br/>
     Average distance: <%= @average_distance %> m<br/>
     Average duration: <%= @average_duration %> min<br/>
-    <a href="/upload">Upload new file</a>
-
+</div>
 
 
 
