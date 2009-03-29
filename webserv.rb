@@ -152,36 +152,25 @@ get '/details/*' do
       @my_altitude_url =  lc.to_url
     end
 
-    #************HEARTRATE GRAPH PREPARATIONS***************
-    original_heartrate_array = @container.get_heartrate_array
-    my_steps = original_heartrate_array.size / 300
-    smaller_hr_array = Array.new
-    1.upto(300) do |i|
-      smaller_hr_array << original_heartrate_array[i*my_steps]
+
+    if @container.heartrates?
+      #************HEARTRATE GRAPH PREPARATIONS***************
+      original_heartrate_array = @container.get_heartrate_array
+      my_steps = original_heartrate_array.size / 300
+      smaller_hr_array = Array.new
+      1.upto(300) do |i|
+        smaller_hr_array << original_heartrate_array[i*my_steps]
+      end
+
+      GoogleChart::LineChart.new('500x250', "Heartrate  (bpm)", false) do |lc|
+        lc.data "Heartrate", smaller_hr_array , '0000ff'
+        lc.show_legend = false
+        lc.axis :y, :range => [@container.get_heartrate_array.min,@container.get_heartrate_array.max], :color => 'ff0000', :font_size => 16, :alignment => :center
+        lc.axis :x, :range => [0,@container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
+        lc.grid :x_step => @container.get_duration_min, :y_step => smaller_hr_array.max, :length_segment => 1, :length_blank => 0
+        @my_hr_url =  lc.to_url
+      end
     end
-
-    GoogleChart::LineChart.new('500x250', "Heartrate  (bpm)", false) do |lc|
-      lc.data "Heartrate", smaller_hr_array , '0000ff'
-      lc.show_legend = false
-      lc.axis :y, :range => [@container.get_heartrate_array.min,@container.get_heartrate_array.max], :color => 'ff0000', :font_size => 16, :alignment => :center
-      lc.axis :x, :range => [0,@container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
-      lc.grid :x_step => @container.get_duration_min, :y_step => smaller_hr_array.max, :length_segment => 1, :length_blank => 0
-      @my_hr_url =  lc.to_url
-    end
-
-   GoogleChart::LineChart.new('500x250', "", false) do |lc|
-      lc.data "Altitude", smaller_altitude_array , '0000ff'
-      lc.data "Speed", smaller_speed_array , '00ffff'
-      lc.data "Heartrate", smaller_hr_array , 'ff00ff'
-      lc.show_legend = false
-      lc.axis :y, :range => [@container.get_heartrate_array.min,@container.get_heartrate_array.max], :color => 'ff0000', :font_size => 16, :alignment => :center
-      lc.axis :x, :range => [0,@container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
-      lc.grid :x_step => @container.get_duration_min, :y_step => smaller_hr_array.max, :length_segment => 1, :length_blank => 0
-      @my_combined_url =  lc.to_url
-    end
-
-
-
 
   end
 

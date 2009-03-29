@@ -125,7 +125,9 @@ map.addOverlay(new createMarker(pt_end,"red","E"));
 <div class="right">
     <img src="<%=@my_speed_url%>" alt="speed graph"/><br/>
     <img src="<%=@my_altitude_url%>" alt="altitude graph"/><br />
+<% if @container.heartrates? then %>
     <img src="<%=@my_hr_url%>" alt="heartrate graph"/><br />
+  <% end %>
     <!--<img src="<%=@my_combined_url%>" alt="all graph"/>  <br />-->
 
 </div>

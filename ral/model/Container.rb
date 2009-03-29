@@ -267,14 +267,21 @@ class Container
     hr_array = Array.new
 
     keys_over_time.each { |key|
-      hr_array.push(@_timestamps[key].get_meta(:heartrate))
+      hr_val = @_timestamps[key].get_meta(:heartrate)
+      if hr_val != nil
+        hr_array.push(hr_val)
+      end
     }
 
     hr_array
   end
 
   def get_hr_min
-    get_heartrate_array.min
+    if heartrates?
+      get_heartrate_array.min
+    else
+      0
+    end
   end
 
   def get_hr_max
@@ -284,8 +291,13 @@ class Container
       #</debug>
       return self.get_data(:hr_max)
     end
-
-    self.set_data(:hr_max, get_heartrate_array.max)
+    
+    if heartrates?
+      self.set_data(:hr_max, get_heartrate_array.max)
+    else
+      self.set_data(:hr_max, 0)
+    end
+    
     return self.get_data(:hr_max)
   end
 

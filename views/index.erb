@@ -49,11 +49,11 @@
       <thead>
 
         <tr>
-          <th>Filename <a href="upload">(upload new)</a></th>
+          <th>Filename</th>
           <th>start</th>
           <th>distance</th>
           <th>duration</th>
-          <th>avg Speed</th>
+          <th>avg speed</th>
           <th>ele. diff</th>
           <th>max &hearts;</th>
           <th>avg &hearts;</th>
@@ -85,7 +85,7 @@
     </table>
     <br/>
 <div id="stats">
-    Amount of files: <%= @my_tracks.size.to_s %><br/>
+    Amount of files: <%= @my_tracks.size.to_s %> <a href="upload">(upload new)</a> <br />
     Total distance: <%= @total_distance %> km<br/>
     Total duration: <%= @total_duration %>h<br/>
     Average distance: <%= @average_distance %> m<br/>
