@@ -102,39 +102,40 @@ get '/details/*' do
     p = Parser.new
     
     #we should be able to get this faster, maybe add this stuff to the Persistence class
-    my_original_container = p.parse(Sinatra::Application.data_folder + filename.to_s)
+    @container = p.parse(Sinatra::Application.data_folder + filename.to_s)
+    
 
-    @polyline = my_original_container.get_embedded_map_polyline
+    @polyline = @container.get_embedded_map_polyline
     #we also need tha latitude/longtitude array for the borders in google maps
-    @latlon = my_original_container.get_lat_lon
+    @latlon = @container.get_lat_lon
 
     #and now to the graphs
-    
+
+
     
     
     #************SPEED GRAPH PREPARATIONS***************
-    original_speed_array = my_original_container.get_speed_array
+    original_speed_array = @container.get_speed_array
     my_steps = original_speed_array.size / 300
     smaller_speed_array = Array.new
     1.upto(300) do |i|
       smaller_speed_array << original_speed_array[i*my_steps]
     end
 
-    GoogleChart::LineChart.new('560x320', "Speed (km/h)", false) do |lc|
+    GoogleChart::LineChart.new('500x250', "Speed (km/h)", false) do |lc|
       lc.data "Speed", smaller_speed_array , '0000ff'
       lc.show_legend = false
       #  lc.data "Altitude", altitude_array, '00ff00'
       #     lc.data "Trend 3", [6,5,4,3,2,1], 'ff0000'
-      lc.axis :y, :range => [0,my_original_container.get_speed_max], :color => 'ff00ff', :font_size => 16, :alignment => :center
-      lc.axis :x, :range => [0,my_original_container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
-      lc.grid :x_step => my_original_container.get_duration_min, :y_step => my_original_container.get_speed_avg, :length_segment => 1, :length_blank => 0
+      lc.axis :y, :range => [0,@container.get_speed_max], :color => 'ff00ff', :font_size => 16, :alignment => :center
+      lc.axis :x, :range => [0,@container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
+      lc.grid :x_step => @container.get_duration_min, :y_step => @container.get_speed_avg, :length_segment => 1, :length_blank => 0
 
       @my_speed_url =  lc.to_url
     end
 
-
     #************ALTITUDE GRAPH PREPARATIONS***************
-    original_altitude_array = my_original_container.get_altitude_array
+    original_altitude_array = @container.get_altitude_array
     minimum_altitude = original_altitude_array.min
     my_steps = original_altitude_array.size / 300
     smaller_altitude_array = Array.new
@@ -142,13 +143,41 @@ get '/details/*' do
       smaller_altitude_array << original_altitude_array[i*my_steps] - minimum_altitude
     end
 
-    GoogleChart::LineChart.new('560x320', "Altitude  (relative to #{minimum_altitude.to_s}m)", false) do |lc|
+    GoogleChart::LineChart.new('500x250', "Altitude  (relative to #{minimum_altitude.to_s}m)", false) do |lc|
       lc.data "Altitude", smaller_altitude_array , '0000ff'
       lc.show_legend = false
-      lc.axis :y, :range => [0,my_original_container.get_altitude_max - minimum_altitude], :color => 'ff00ff', :font_size => 16, :alignment => :center
-      lc.axis :x, :range => [0,my_original_container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
-      lc.grid :x_step => my_original_container.get_duration_min, :y_step => smaller_altitude_array.max - smaller_altitude_array.min, :length_segment => 1, :length_blank => 0
+      lc.axis :y, :range => [0,@container.get_altitude_max - minimum_altitude], :color => 'ff00ff', :font_size => 16, :alignment => :center
+      lc.axis :x, :range => [0,@container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
+      lc.grid :x_step => @container.get_duration_min, :y_step => smaller_altitude_array.max - smaller_altitude_array.min, :length_segment => 1, :length_blank => 0
       @my_altitude_url =  lc.to_url
+    end
+
+    #************HEARTRATE GRAPH PREPARATIONS***************
+    original_heartrate_array = @container.get_heartrate_array
+    my_steps = original_heartrate_array.size / 300
+    smaller_hr_array = Array.new
+    1.upto(300) do |i|
+      smaller_hr_array << original_heartrate_array[i*my_steps]
+    end
+
+    GoogleChart::LineChart.new('500x250', "Heartrate  (bpm)", false) do |lc|
+      lc.data "Heartrate", smaller_hr_array , '0000ff'
+      lc.show_legend = false
+      lc.axis :y, :range => [@container.get_heartrate_array.min,@container.get_heartrate_array.max], :color => 'ff0000', :font_size => 16, :alignment => :center
+      lc.axis :x, :range => [0,@container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
+      lc.grid :x_step => @container.get_duration_min, :y_step => smaller_hr_array.max, :length_segment => 1, :length_blank => 0
+      @my_hr_url =  lc.to_url
+    end
+
+   GoogleChart::LineChart.new('500x250', "", false) do |lc|
+      lc.data "Altitude", smaller_altitude_array , '0000ff'
+      lc.data "Speed", smaller_speed_array , '00ffff'
+      lc.data "Heartrate", smaller_hr_array , 'ff00ff'
+      lc.show_legend = false
+      lc.axis :y, :range => [@container.get_heartrate_array.min,@container.get_heartrate_array.max], :color => 'ff0000', :font_size => 16, :alignment => :center
+      lc.axis :x, :range => [0,@container.get_duration_min], :color => '00ffff', :font_size => 16, :alignment => :center
+      lc.grid :x_step => @container.get_duration_min, :y_step => smaller_hr_array.max, :length_segment => 1, :length_blank => 0
+      @my_combined_url =  lc.to_url
     end
 
 

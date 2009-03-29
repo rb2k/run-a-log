@@ -4,9 +4,11 @@
     <title>Run-a-log</title>
   </head>
   <style type="text/css">
-     div.left{float:left;width:620px;padding:10px;border: 1px grey solid;}
-     div.right{float:right; padding:10px;border:1px silver solid;}
+     div.left{float:left;width:50%;padding:10px;}
+     div.right{float:right; padding:10px;}
      img{padding: 5px;}
+     td.label{font-weight: bold;}
+     td.value{text-align: left;}
     </style>
   <body>
   <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= Sinatra::Application.google_maps_key %>&amp;sensor=true"
@@ -18,17 +20,55 @@
 
     <a href="/">&lt;-- back</a><br/>
 
-    Filename: <%= @my_item.filename %><br/>
-<br />
-    Start: <%= @my_item.start.strftime("%d.%m.%Y - %H:%M") %><br/>
-    End: <%= @my_item.end.strftime("%d.%m.%Y - %H:%M") %><br/>
-    Duration: <%= Integer((@my_item.duration / 60)).to_s %> min<br/>
-<br />
-    Distance: <%= @my_item.distance.to_s %> m<br/>
-    Avg Speed: <%= @my_item.speed_avg.to_s %> km/h<br/>
- 
+    <h4>Filename: <%= @my_item.filename %></h4>
 
-    <div id="map_canvas" style="width: 600px; height: 600px"></div>
+
+    <table>
+      <tr>
+         <td class="label">Start:</td>
+         <td class="value"><%= @my_item.start.strftime("%d.%m.%Y - %H:%M") %></td>
+         
+         <td class="label">Distance:</td>
+         <td class="value"> <%= @my_item.distance.to_s %>m</td>
+
+       </tr>
+       <tr>
+         <td class="label">End:</td>
+         <td class="value"><%= @my_item.end.strftime("%d.%m.%Y - %H:%M") %></td>
+         <td class="label">Avg Speed</td>
+         <td class="value"><%= @my_item.speed_avg.to_s %> km/h</td>
+       </tr>
+       <tr>
+         <td class="label">Duration:</td>
+         <td class="value"><%= Integer((@my_item.duration / 60)).to_s %> min</td>
+         <td class="label">Max Speed</td>
+         <td class="value"><%= (@my_item.speed_max).to_s %> km/h</td>
+       </tr>
+       <tr><td></td></tr>
+       <% if @container.heartrates? then %>
+        <tr>
+          <td class="label">Min HR: </td>
+           <td class="value"><%= (@container.get_hr_min).to_s %> bpm</td>
+          </tr><tr>
+          <td class="label">Max HR: </td>
+           <td class="value"><%= (@container.get_hr_max).to_s %> bpm</td>
+          </tr><tr>
+          <td class="label">Avg HR: </td>
+           <td class="value"><%= (sprintf "%.2f", @container.get_hr_avg).to_s %> bpm</td>
+          </tr>
+        <% end %>
+
+       </table>
+
+      <p>
+        Minimum Elevation: <%= (@container.get_altitude_min).to_s %> m
+        <br />
+        Maximum Elevation: <%= (@container.get_altitude_max).to_s %> m (-&gt; Difference: <%= Integer(@container.get_altitude_max - @container.get_altitude_min).to_s %>m)
+      </p><p>
+        
+      </p>
+
+    <div id="map_canvas" style="width: 700px; height: 500px"></div>
 
     <script type="text/javascript">
 
@@ -84,7 +124,10 @@ map.addOverlay(new createMarker(pt_end,"red","E"));
 </div>
 <div class="right">
     <img src="<%=@my_speed_url%>" alt="speed graph"/><br/>
-    <img src="<%=@my_altitude_url%>" alt="altitude graph"/>
+    <img src="<%=@my_altitude_url%>" alt="altitude graph"/><br />
+    <img src="<%=@my_hr_url%>" alt="heartrate graph"/><br />
+    <!--<img src="<%=@my_combined_url%>" alt="all graph"/>  <br />-->
+
 </div>
   </body>
 </html>

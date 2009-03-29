@@ -3,8 +3,7 @@ class Container
   require "Timestamp.rb"
 
   attr_accessor :_timestamps
-  
-  
+    
   $allowed_container_data=[
     :filename,
     :start,
@@ -14,7 +13,10 @@ class Container
     :distance,
     :duration,
     :speed_avg,
-    :speed_max
+    :speed_max,
+    :elevation,
+    :hr_max,
+    :hr_avg
   ]
   
   
@@ -80,9 +82,11 @@ class Container
         next
       end
 
-
       second_pair = @_timestamps[key]
-      dst = mathy.distance_in_m(first_pair.get_data(:latitude),first_pair.get_data(:longitude),second_pair.get_data(:latitude),second_pair.get_data(:longitude))
+      dst = mathy.distance_in_m(first_pair.get_data(:latitude),
+                                first_pair.get_data(:longitude),
+                                 second_pair.get_data(:latitude),
+                                 second_pair.get_data(:longitude))
       distance+=dst
     
       #ok, now we want to get the distance from the second pair to the following trackpoint
@@ -219,10 +223,7 @@ class Container
       first_pair = second_pair
     }
     speed_array
-
   end
-
-
 
   def get_altitude_array
 
@@ -236,13 +237,77 @@ class Container
     altitude_array
   end
 
-
   def get_altitude_min
     get_altitude_array.min
   end
 
   def get_altitude_max
     get_altitude_array.max
+  end
+
+ def get_elevation
+    if !self.get_data(:elevation).nil?
+      #<debug>
+      #puts "debug: cached end_time data found!"
+      #</debug>
+      return self.get_data(:elevation)
+    end
+
+    self.set_data(:elevation, get_altitude_array.max - get_altitude_array.min)
+    return self.get_data(:elevation)
+  end
+
+
+  def heartrates?
+    get_heartrate_array.size > 0
+  end
+
+  def get_heartrate_array
+    keys_over_time = @_timestamps.keys.sort
+    hr_array = Array.new
+
+    keys_over_time.each { |key|
+      hr_array.push(@_timestamps[key].get_meta(:heartrate))
+    }
+
+    hr_array
+  end
+
+  def get_hr_min
+    get_heartrate_array.min
+  end
+
+  def get_hr_max
+    if !self.get_data(:hr_max).nil?
+      #<debug>
+      #puts "debug: cached end_time data found!"
+      #</debug>
+      return self.get_data(:hr_max)
+    end
+
+    self.set_data(:hr_max, get_heartrate_array.max)
+    return self.get_data(:hr_max)
+  end
+
+  def get_hr_avg
+    if !self.get_data(:hr_avg).nil?
+      #<debug>
+      #puts "debug: cached end_time data found!"
+      #</debug>
+      return self.get_data(:hr_avg)
+    end
+
+  #if there are heartrates, we'll sum them up and divide them by their amount --> average
+  @hrates = get_heartrate_array
+    if @hrates.size > 0
+        my_sum = 0
+
+        @hrates.each{|hr| my_sum += hr }
+        self.set_data(:hr_avg, my_sum/@hrates.size)
+        return self.get_data(:hr_avg)
+    else
+        return 0
+    end
   end
 
   def get_lat_lon

@@ -21,7 +21,7 @@
 			background-color: #ffffee;
 		}
 		tr.even{
-			background.color: #ff0;
+			background-color: #fff;
 		}
 		td{
 			border-width: 1px;
@@ -31,6 +31,12 @@
 		        -moz-border-radius: 6px 6px 6px 6px;
 		}
 		td.number{text-align: right;}
+        td.center{text-align: center;}
+
+        td.meters:after{content: " m"}
+        td.kmh:after{content: " km/h"}
+        td.minutes:after{content: " min"}
+
 		div#content{width: 1000px; margin: 20px auto;}
 		table#list{float: left; padding-right: 5px;}
 		div#stats{border: 1px silver solid;}
@@ -62,12 +68,12 @@
           <tr class="<%= (i % 2 == 0 ? "even" : "odd") %>">
             <td><b><%= item.filename %></b></td>
             <td class="stat"><%= item.start.strftime("%Y.%m.%d - %H:%M") %></td>
-            <td class='number'><%= item.distance.to_i.to_s %> m</td>
-            <td class='number'><%= (item.duration / 60).to_i.to_s %> min</td>
-            <td class='number'><%= "%0.2f" % item.speed_avg.to_s %> km/h</td>
-	    <td class='number'></td>
-	    <td class='number'></td>
-            <td class='number'></td>
+            <td class='number meters'><%= item.distance.to_i.to_s %></td>
+            <td class='number minutes'><%= (item.duration / 60).to_i.to_s %></td>
+            <td class='number kmh'><%= "%0.2f" % item.speed_avg.to_s %></td>
+            <td class='number meters'><%= "%0.0f" % item.elevation.to_s %></td>
+            <td class='center'><%= "%0.0f" % item.max_hr.to_s %></td>
+            <td class='center'><%= "%0.0f" % item.avg_hr.to_s %></td>
             <td align="center"><a href="details/<%= item.filename %>"><img src="icons/details.gif" alt="details" width=18px height=20px border=0 /></a>
             <a href="delete/<%= item.filename %>"><img src="icons/delete.gif" alt="delete" width=18px height=18px border=0  /></a></td>
 
@@ -90,7 +96,7 @@
 
     <script type="text/javascript" src="webtoolkit.sortabletable.js"></script>
     <script type="text/javascript">
-      var t = new SortableTable(document.getElementById('stats'), 100);
+      var t = new SortableTable(document.getElementById('list'), 100);
     </script>
 
 

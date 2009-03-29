@@ -10,6 +10,9 @@ include DataMapper::Resource
   property :speed_max,       Float
   property :distance,       Float
   property :duration,       Float
+  property :elevation,       Float
+  property :max_hr,       Float
+  property :avg_hr,       Float
   #property :comment,       String
   #property :container,       Object, :lazy => true
 
@@ -21,6 +24,9 @@ include DataMapper::Resource
      self.distance = my_container.get_distance
      self.duration = my_container.get_duration
      self.filename = my_container.get_filename
+     self.elevation = my_container.get_elevation
+     self.max_hr = my_container.get_hr_max
+     self.avg_hr = my_container.get_hr_avg
 
      #require("yaml")
      #require("zlib")
