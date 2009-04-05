@@ -2,6 +2,7 @@ A sinatra app analyzing and visualizing gpx/kml/nmea gps traces
 
 ruby gems needed:
 	* sinatra
+        * nokogiri (for gpx parsing)
 	* do_mysql
 	* dm-core
 	* dm-aggregates
