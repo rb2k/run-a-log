@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<title>Running log</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="/style.css" />
+	</head>
+<body>
+
+<div id="container">
+	<div id="header" allign="center">
+	</div>
+	<div id="nav">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<% @dir_list.each do |f| %>
+					<li><a href="/category/<%= f %>"><%= f %></a></li>
+				<% end %>
+			</ul>
+		</div>
+<div id="content">
+<br/>
+<h2>Select your Track</h2>
+Total distance: <%= (@stats["total_distance"] / 1000).round %> km, Total duration: <%= (@stats["total_duration"] / 3600).round %> h, Avg speed: <%= ((@stats["total_distance"] / @stats["total_duration"]) * 3.6).to_s[/\d*\.\d{2}/] %> km/h<br/>
+
+<table id="tracktable" border="0">
+<th>filename</th><th>starting time</th><th>duration</th><th>distance</th><th>avg speed</th>
+	<% @pstore.transaction(true) do %>
+		<% @file_list.each_with_index do |f,index| %>
+			<tr class="<%= if index.even? then "even";else "odd";end%>">
+				<td><a href="/details/<%= f %>"><%= f.split("/").last[0..-5] %></a></td>
+				<td><%= @pstore[f].time_start.strftime("%d.%h.%y%t-%t%H:%M") %></td>
+				<td><%= (@pstore[f].duration / 60).round %> min</td>
+				<td><%= @pstore[f].distance %> m</td>
+				<td><%= @pstore[f].speed_avg.to_s[/\d*\.\d\d/] %> km/h</td>
+			</tr>
+		<% end %>
+	<% end %>
+
+</table>
+	</div>
+</html>
+

@@ -1,0 +1,106 @@
+/* ---------------------------------- */
+/* --- Written by Raymond Gerrard --- */ 
+/* ---------------------------------- */
+
+body{
+	background: url("images/background.gif") repeat;
+	color: #333333;
+	font: normal 11px/22px Verdana, Arial, Helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+#container{
+	width: 700px;
+	padding: 0;
+	margin: 1em;
+	background-color: #fcfcfc;
+	text-align: center;
+	border: 1px solid #333;
+}
+#header{
+	background-color: #59708c;
+	width: 100%;
+	height: 30px;
+}
+#nav{
+	width: 100%;
+	float: left;
+	padding: 0;
+	margin: 0;
+}
+#nav ul{
+	float: left;
+	width: 100%;
+	padding: 0.2em 0 0.2em 0;
+	margin: 0;
+	color: #ffffff;
+	background-color: #cdd3d3;
+}
+#nav li{
+	display: inline;
+	margin: 0 0 0 0.4em;
+}
+#nav li a{
+	border: 1px solid #663300;
+	width: 5em;
+	color: #663300;
+	background-color: #f3f3f3;
+	padding: 0.2em 1em;
+	text-decoration: none;
+}
+#nav li a:hover{
+	background-color: #cdd3d3;
+	color: #f3f3f3;
+}
+#content h1{
+	margin: 0;
+	font-size: 12px;
+	text-indent: 1em;
+	background-color: #f3f3f3;
+}
+#content p{
+	padding: 0 0.25em 0 1em;
+}
+
+#tracktable{
+	width: 100%;
+	float: center;
+}
+
+#tracktable th {
+ padding-left:10px;
+ padding-right: 10px;
+ padding-top: 0px;
+ padding-bottom: 0px;
+ text-align: center;
+}
+
+
+#tracktable tr.even {
+ background-color: #f3f3f3; color: black;
+ padding-left:10px;
+ padding-right: 10px;
+ padding-top: 0px;
+ padding-bottom: 0px;
+ text-align: center;
+}
+
+#tracktable tr.odd {
+ background-color: #cdd3d3; color: black;
+ padding-left:10px;
+ padding-right: 10px;
+ padding-top: 0px;
+ padding-bottom: 0px;
+ text-align: center;
+}
+
+
+
+
+#footer{
+	background-color: #f3f3f3;
+	padding: 0.1em;
+	margin: 0;
+	text-align: center;
+	color: #333333;
+}

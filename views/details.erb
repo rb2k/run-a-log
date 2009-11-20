@@ -1,135 +1,57 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-  <head>
-    <title>Run-a-log</title>
-  </head>
-  <style type="text/css">
-     div.left{float:left;width:50%;padding:10px;}
-     div.right{float:right; padding:10px;}
-     img{padding: 5px;}
-     td.label{font-weight: bold;}
-     td.value{text-align: left;}
-    </style>
-  <body>
-  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= Sinatra::Application.google_maps_key %>&amp;sensor=true"
-          type="text/javascript"></script>
-
-  <body onload="initialize()" onunload="GUnload()">
-
-<div class="left">
-
-    <a href="/">&lt;-- back</a><br/>
-
-    <h4>Filename: <%= @my_item.filename %></h4>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<title>Running log</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="/style.css" />
+<!-- localhost
+<script src="http://maps.google.com/maps?file=api&v=1&key=ABQIAAAAnfs7bKE82qgb3Zc2YyS-oBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSySz_REpPq-4WZA27OwgbtyR3VcA" type="text/javascript"></script>
+-->
+<script src="http://maps.google.com/maps?file=api&v=1&key=<%= @google_maps_key  %>" type="text/javascript"></script>
 
 
-    <table>
-      <tr>
-         <td class="label">Start:</td>
-         <td class="value"><%= @my_item.start.strftime("%d.%m.%Y - %H:%M") %></td>
-         
-         <td class="label">Distance:</td>
-         <td class="value"> <%= @my_item.distance.to_s %>m</td>
-
-       </tr>
-       <tr>
-         <td class="label">End:</td>
-         <td class="value"><%= @my_item.end.strftime("%d.%m.%Y - %H:%M") %></td>
-         <td class="label">Avg Speed</td>
-         <td class="value"><%= @my_item.speed_avg.to_s %> km/h</td>
-       </tr>
-       <tr>
-         <td class="label">Duration:</td>
-         <td class="value"><%= Integer((@my_item.duration / 60)).to_s %> min</td>
-         <td class="label">Max Speed</td>
-         <td class="value"><%= (@my_item.speed_max).to_s %> km/h</td>
-       </tr>
-       <tr><td></td></tr>
-       <% if @container.heartrates? then %>
-        <tr>
-          <td class="label">Min HR: </td>
-           <td class="value"><%= (@container.get_hr_min).to_s %> bpm</td>
-          </tr><tr>
-          <td class="label">Max HR: </td>
-           <td class="value"><%= (@container.get_hr_max).to_s %> bpm</td>
-          </tr><tr>
-          <td class="label">Avg HR: </td>
-           <td class="value"><%= (sprintf "%.2f", @container.get_hr_avg).to_s %> bpm</td>
-          </tr>
-        <% end %>
-
-       </table>
-
-      <p>
-        Minimum Elevation: <%= (@container.get_altitude_min).to_s %> m
-        <br />
-        Maximum Elevation: <%= (@container.get_altitude_max).to_s %> m (-&gt; Difference: <%= Integer(@container.get_altitude_max - @container.get_altitude_min).to_s %>m)
-      </p><p>
-        
-      </p>
-
-    <div id="map_canvas" style="width: 700px; height: 500px"></div>
-
-    <script type="text/javascript">
+<script type="text/javascript">
 
       function initialize() {
         if (GBrowserIsCompatible()) {
-          var map = new GMap2(document.getElementById("map_canvas"));
+        var map = new GMap2(document.getElementById("map_canvas"));
+	var center = new GLatLng(<%= @file_data.startingpoint.join(", ") %>);
+	map.setCenter(center, 13);
+        map.setUIToDefault();
+        <%= @file_data.polyline %>
+        map.addOverlay(myLine);}}
+</script>
+	</head>
+<body>
 
-          // Set up the Boundries of what we want to view
-          var bounds = new GLatLngBounds;
+<div id="container">
+	<div id="header"></div>
+	<div id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+			<% @dir_list.each do |f| %>
+				<li><a href="/category/<%= f %>"><%= f %></a></li>
+			<% end %>
+		</ul>
+	</div>
+	<body onload="initialize()" onunload="GUnload()">
+	<div id="content">
+	<br/>
+	<h2>Details:</h2>
+	<table id="tracktable" border="0">
+	<tr><td>Filename: <%= @file_data.filename %></td></tr>
+	<tr><td>Time start: <%= @file_data.time_start %></td></tr>
+	<tr><td>Time end: <%= @file_data.time_end %></td></tr>
+	<tr><td>Duration: <%= (@file_data.duration / 60).floor %> min</td></tr>
+	<tr><td>Distance: <%= @file_data.distance %> m</td></tr>
+	<tr><td>Elevation_min: <%= @file_data.elevation_min.to_i %> m</td></tr>
+	<tr><td>Elevation_max: <%= @file_data.elevation_max.to_i %> m</td></tr>
+	<tr><td>Average Speed: <%= @file_data.speed_avg.to_s[/\d*\.\d{2}/] %> km/h</td></tr>
+	<tr><td align="center"><div id="map_canvas" style="width: 640px; height: 480px"></td></tr>
+	</table>
 
-
-<%# I don't really know if that's ok... but so far, it works... %>
-      // SW Corner
-      bounds.extend(new GLatLng( <%= @latlon.min.join(", ") %>));
-      // NE Corner
-      bounds.extend(new GLatLng( <%= @latlon.max.join(", ") %>));
-      map.setCenter(bounds.getCenter(), map.getBoundsZoomLevel(bounds));
-
-      // Add our controls and map views
-      map.addControl(new GLargeMapControl());
-      map.addControl(new GScaleControl());
-      map.addControl(new GMapTypeControl());
-      map.addMapType(G_PHYSICAL_MAP);
-      //map.setMapType(G_PHYSICAL_MAP);
-      map.setMapType(G_NORMAL_MAP);
-
-      var myLine = new GPolyline.fromEncoded({
-        color: "#0000ff",
-        weight: 4,
-        opacity: 0.8,
-        zoomFactor: <%=@polyline[:zoomFactor] %>,
-        numLevels: <%=@polyline[:numLevels] %>,
-        points: "<%=@polyline[:points] %>",
-        levels: "<%=@polyline[:levels] %>"
-      });
-
-
-
-      map.addOverlay(myLine);
-
-<%# doesn't work so far
-// Add Starting and Ending Markers
-var pt_start = myLine.getVertex(0);
-map.addOverlay(new createMarker(pt_start,"green","S"));
-var pt_end = myLine.getVertex(myLine.getVertexCount()-5);
-map.addOverlay(new createMarker(pt_end,"red","E"));
-
-%>
-    }
-  }
-
-    </script>
-</div>
-<div class="right">
-    <img src="<%=@my_speed_url%>" alt="speed graph"/><br/>
-    <img src="<%=@my_altitude_url%>" alt="altitude graph"/><br />
-<% if @container.heartrates? then %>
-    <img src="<%=@my_hr_url%>" alt="heartrate graph"/><br />
-  <% end %>
-    <!--<img src="<%=@my_combined_url%>" alt="all graph"/>  <br />-->
 
 </div>
-  </body>
+</body>
 </html>

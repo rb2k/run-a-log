@@ -1,107 +1,28 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-  <head>
-    <title>Run-a-log</title>
-  </head>
-  <style type="text/css">
-		table{
-			border: none;
-			border-spacing: 0px;		
-			border-color: gray;	
-		}
-		th{
-			border-width: 1px;
-			padding: 3px;
-			border-style: dotted;
-			border-color: silver;
-			background-color: white;
-			-moz-border-radius: 6px;
-		}
-		tr.odd{
-			background-color: #ffffee;
-		}
-		tr.even{
-			background-color: #fff;
-		}
-		td{
-			border-width: 1px;
-		        padding: 3px;
-			border-style: dotted;
-			border-color: gray;
-		        -moz-border-radius: 6px 6px 6px 6px;
-		}
-		td.number{text-align: right;}
-        td.center{text-align: center;}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<title>Running log</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+<body>
 
-        td.meters:after{content: " m"}
-        td.kmh:after{content: " km/h"}
-        td.minutes:after{content: " min"}
-
-		div#content{width: 1000px; margin: 20px auto;}
-		table#list{float: left; padding-right: 5px;}
-		div#stats{border: 1px silver solid;}
-	 </style>
-
-  <body>
-
-    <img src="logo/RunALogLogo.png" alt="Logo" style="float: left;"/>
-    <table id="list">
-      <thead>
-
-        <tr>
-          <th>Filename</th>
-          <th>start</th>
-          <th>distance</th>
-          <th>duration</th>
-          <th>avg speed</th>
-          <th>ele. diff</th>
-          <th>max &hearts;</th>
-          <th>avg &hearts;</th>
-          <th>action</th>
-          
-        </tr>
-      </thead>
-      <tbody>
-        <%  i=0
-	@my_tracks.each do |item| 
-		i = i+1 %>
-          <tr class="<%= (i % 2 == 0 ? "even" : "odd") %>">
-            <td><b><%= item.filename %></b></td>
-            <td class="stat"><%= item.start.strftime("%Y.%m.%d - %H:%M") %></td>
-            <td class='number meters'><%= item.distance.to_i.to_s %></td>
-            <td class='number minutes'><%= (item.duration / 60).to_i.to_s %></td>
-            <td class='number kmh'><%= "%0.2f" % item.speed_avg.to_s %></td>
-            <td class='number meters'><%= "%0.0f" % item.elevation.to_s %></td>
-            <td class='center'><%= "%0.0f" % item.max_hr.to_s %></td>
-            <td class='center'><%= "%0.0f" % item.avg_hr.to_s %></td>
-            <td align="center"><a href="details/<%= item.filename %>"><img src="icons/details.gif" alt="details" width=18px height=20px border=0 /></a>
-            <a href="delete/<%= item.filename %>"><img src="icons/delete.gif" alt="delete" width=18px height=18px border=0  /></a></td>
-
-          </tr>
-        <% end %>
-
-      </tbody>
-
-    </table>
-    <br/>
-<div id="stats">
-    Amount of files: <%= @my_tracks.size.to_s %> <a href="upload">(upload new)</a> <br />
-    Total distance: <%= @total_distance %> km<br/>
-    Total duration: <%= @total_duration %>h<br/>
-    Average distance: <%= @average_distance %> m<br/>
-    Average duration: <%= @average_duration %> min<br/>
-</div>
-
-
-
-    <script type="text/javascript" src="webtoolkit.sortabletable.js"></script>
-    <script type="text/javascript">
-      var t = new SortableTable(document.getElementById('list'), 100);
-    </script>
-
-
-
-
-
-  </body>
+<div id="container">
+	<div id="header"></div>
+	<div id="nav">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<% @dir_list.each do |f| %>
+					<li><a href="/category/<%= f %>"><%= f %></a></li>
+				<% end %>
+			</ul>
+		</div>
+	<div id="content">
+	<ul>
+	<br/>
+	<h2>Welcome to the running log, please select your category</h2>
+	<img src="images/logo.png"/>
+	</ul>
+	</div>
 </html>
