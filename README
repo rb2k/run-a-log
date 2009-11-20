@@ -9,4 +9,12 @@ You need an individual API key.
 The one given in config/sharearun.yml is for localhost, if you want to use run-a-log somewehre else, get an appropiate key over here: http://code.google.com/apis/maps/signup.html.
 
 
+Installation:
+1. Install the gems
+2. Put some .gpx files into a subfolder of the "gpx" directory (subfolders will be used as menu items)
+3. ???
+4. Profit!
+
+
+
 Demo available here: http://fitness.marc-seeger.de
