@@ -1,5 +1,7 @@
 A sinatra app analyzing and visualizing gpx/kml/nmea gps traces that stores data in a pstore file
 
+Tested using ruby 1.9.1
+
 ruby gems needed:
 	* sinatra (the webframework)
 	* hpricot (for gpx parsing)
