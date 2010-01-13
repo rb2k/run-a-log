@@ -26,18 +26,15 @@ Total distance: <%= (@stats["total_distance"] / 1000).round %> km, Total duratio
 
 <table id="tracktable" border="0">
 <th>filename</th><th>starting time</th><th>duration</th><th>distance</th><th>avg speed</th>
-	<% @pstore.transaction(true) do %>
-		<% @file_list.each_with_index do |f,index| %>
+		<% @view_list.each_with_index do |f,index| %>
 			<tr class="<%= if index.even? then "even";else "odd";end%>">
-				<td><a href="/details/<%= f %>"><%= f.split("/").last[0..-5] %></a></td>
-				<td><%= @pstore[f].time_start.strftime("%d.%h.%y%t-%t%H:%M") %></td>
-				<td><%= (@pstore[f].duration / 60).round %> min</td>
-				<td><%= @pstore[f].distance %> m</td>
-				<td><%= @pstore[f].speed_avg.to_s[/\d*\.\d\d/] %> km/h</td>
+				<td><a href="/details/<%= f.filename %>"><%= f.filename.split("/").last[0..-5] %></a></td>
+				<td><%= f.time_start.strftime("%d.%h.%y%t-%t%H:%M") %></td>
+				<td><%= (f.duration / 60).round %> min</td>
+				<td><%= f.distance %> m</td>
+				<td><%= f.speed_avg.to_s[/\d*\.\d\d/] %> km/h</td>
 			</tr>
 		<% end %>
-	<% end %>
-
 </table>
 	</div>
 </html>

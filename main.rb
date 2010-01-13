@@ -61,6 +61,8 @@ get '/category/:foldername' do
 	@file_list = Dir.glob("gpx/#{params[:foldername]}/*.gpx").sort.reverse
 	
 	files_to_insert = Array.new	
+
+	#detect new files
 	@pstore.transaction(true) do
 		@file_list.each do |item|
 			if @pstore[params[:foldername]].nil?
@@ -71,14 +73,14 @@ get '/category/:foldername' do
 			end #if
 		end #do
 	end #do
-	
-
+	#insert new files
 	files_to_insert.each do |gpxfile|
 		insert_into_pstore(gpxfile)
 	end
 
 
-	#update total stats
+	#update total stats and get file_list for view
+	@view_list = Array.new
 	@stats = Hash.new
 	@stats["total_distance"] = 0.0
 	@stats["total_duration"] = 0.0
@@ -86,8 +88,11 @@ get '/category/:foldername' do
 		@pstore[params[:foldername]].each do |gpxfile|
 			@stats["total_distance"] += @pstore[gpxfile].distance
 			@stats["total_duration"] += @pstore[gpxfile].duration
+			@view_list << @pstore[gpxfile]
 		end unless @pstore[params[:foldername]].nil?
 	end
+
+	@view_list.sort!{|item1, item2| item2.time_start <=> item1.time_start}
 
 	erb(:category)
 end
