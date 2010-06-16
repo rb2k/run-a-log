@@ -2,7 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'pstore'
 require "yaml"
-require 'models/gpx_file.rb'
+require './models/gpx_file.rb'
 
 
 set :persistence, PStore.new("persistence/persistence.pstore")
