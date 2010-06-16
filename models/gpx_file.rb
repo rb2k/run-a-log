@@ -1,8 +1,8 @@
 class GPX_file
 	require "hpricot"
 	require "time"
-	require "lib/geo.rb"
-	require "lib/gmap_polyline_encoder.rb"
+	require "./lib/geo.rb"
+	require "./lib/gmap_polyline_encoder.rb"
 	attr_accessor :filename, :speed_avg, :elevation_min, :elevation_max, :polyline, :time_start, :time_end, :duration, :distance, :polyline, :startingpoint
 
 	def initialize(path_to_file)
