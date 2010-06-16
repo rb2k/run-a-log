@@ -9,20 +9,13 @@ set :persistence, PStore.new("persistence/persistence.pstore")
 set :user_options, YAML::load( File.open( 'config/sharearun.yml' ) )
 
 set :dir_list, Dir.entries("gpx").select{|item|
-		case item
-		when ".."
-			false
-			next
-		when "."
-			false
-			next
-		when !File.directory?("gpx/#{item}")
-			false
-			next
-		else
-			true
-		end
-
+			if item.to_s.match(/^\./)
+				false
+			elsif !File.directory?("gpx/#{item}")
+				false
+			else
+				true
+			end
 	}
 
 
@@ -32,17 +25,19 @@ def insert_into_pstore(path_to_gpx)
 	puts "Crunching on #{path_to_gpx}"
 	category_folder = path_to_gpx.split("/")[1]
 	file_name = path_to_gpx.split("/").last
-	
-	parsed_file = GPX_file.new(path_to_gpx)
-	
-	@pstore.transaction do
-		# ensure that an index has been created...
-		@pstore[category_folder] ||= Array.new
-		@pstore[path_to_gpx] = parsed_file
-		#add newly parsed file to the index
-		@pstore[category_folder].push(path_to_gpx)
+	begin
+		parsed_file = GPX_file.new(path_to_gpx)
+		@pstore.transaction do
+			# ensure that an index has been created...
+			@pstore[category_folder] ||= Array.new
+			@pstore[path_to_gpx] = parsed_file
+			#add newly parsed file to the index
+			@pstore[category_folder].push(path_to_gpx)
+		end
+		puts "Analyzed and inserted #{path_to_gpx}"
+	rescue StandardError => e
+		puts "crashed while analyzing: #{path_to_gpx}: #{e}"
 	end
-	puts "Analyzed and inserted #{path_to_gpx}"
 end
 
 

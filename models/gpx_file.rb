@@ -14,9 +14,10 @@ class GPX_file
 		 doc = open(@filename) { |f| Hpricot(f) }
 
 		#***********TIMES+DURATIONS***********
-		@time_start = Time.parse(doc.search("//time").first.inner_text)		
-		@time_end = Time.parse(doc.search("//time").last.inner_text)
+		@time_start = Time.parse(doc.search("//trkpt/time").first.inner_text)		
+		@time_end = Time.parse(doc.search("//trkpt/time").last.inner_text)
 		@duration = (@time_end - @time_start)
+		
 		#***********ELEVATIONS***********
 		elevations = doc.search("//ele").map{|ele| ele.inner_text.to_f}
 		@elevation_min = elevations.min
@@ -31,9 +32,6 @@ class GPX_file
 		end
 		@startingpoint = [trackpoints.first[0], trackpoints.first[1]]
 
-
-
-		
 		geocoder = Geo.new
 		speeds = Array.new
 		@distance = 0.0
