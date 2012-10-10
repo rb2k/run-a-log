@@ -1,10 +1,13 @@
 A sinatra app analyzing and visualizing gpx/kml/nmea gps traces that stores data in a pstore file
 
-Tested using ruby 1.9.1
+Tested using ruby 1.9
 
 ruby gems needed:
+	* bundler (for managing gems)
 	* sinatra (the webframework)
-	* hpricot (for gpx parsing)
+	* nokogiri (for gpx parsing)
+
+To install them, just make sure you have bundler installed (gem install bundler) and then type "bundle install" from within the apps root directory
 	
 Google Maps:  
 You need an individual API key.
