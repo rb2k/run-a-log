@@ -1,7 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    hpricot (0.8.6)
+    nokogiri (1.5.5)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
@@ -15,5 +15,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  hpricot
+  nokogiri
   sinatra

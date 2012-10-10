@@ -21,7 +21,7 @@ set :dir_list, Dir.entries("gpx").select{|item|
 
 
 def insert_into_pstore(path_to_gpx)
-	@pstore = options.persistence
+	@pstore = settings.persistence
 	puts "Crunching on #{path_to_gpx}"
 	category_folder = path_to_gpx.split("/")[1]
 	file_name = path_to_gpx.split("/").last
@@ -42,16 +42,16 @@ end
 
 
 get '/' do
-	@dir_list = options.dir_list
+	@dir_list = settings.dir_list
 	erb(:index)
 end
 
 
 
 get '/category/:foldername' do
-	@dir_list = options.dir_list
+	@dir_list = settings.dir_list
 	throw :halt, [404, "This category does not exist!"] unless @dir_list.include?(params[:foldername])
-	@pstore = options.persistence
+	@pstore = settings.persistence
 
 	@file_list = Dir.glob("gpx/#{params[:foldername]}/*.gpx").sort.reverse
 	
@@ -96,10 +96,10 @@ end
 
 get '/details/*' do
 
-	@dir_list = options.dir_list
+	@dir_list = settings.dir_list
 
-	@pstore = options.persistence
-	@google_maps_key = options.user_options["google_maps_key"]
+	@pstore = settings.persistence
+	@google_maps_key = settings.user_options["google_maps_key"]
 	
 	@file_data = nil
 	full_path = params[:splat].join("/")
